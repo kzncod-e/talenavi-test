@@ -8,7 +8,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import type { User } from "../View/Home";
-
+import { toast } from "react-toastify";
 interface EditUserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -65,6 +65,20 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       };
 
       onUpdateUser(updatedUser);
+      toast("🦄 user edited successfully !", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => {
+          // console.log("Toast closed");
+          onClose();
+        },
+      });
       onClose();
     }
   };

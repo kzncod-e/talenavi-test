@@ -8,7 +8,7 @@ import DeleteConfirmationModal from "../components/deleteConfirmationModal";
 import EditUserModal from "../components/editUserModal";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/Navbar";
-
+import { toast, ToastContainer } from "react-toastify";
 // Mock data for pagination
 
 export interface User {
@@ -123,8 +123,24 @@ function App() {
         prevUsers.filter((user) => user.id !== currentUser.id)
       );
     }
-    setIsDeleteModalOpen(false);
     setCurrentUser(null);
+    setIsDeleteModalOpen(false);
+
+    toast("🦄 user deleted successfully !", {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      onClose: () => {
+        // console.log("Toast closed");
+
+        setIsDeleteModalOpen(false);
+      },
+    });
   };
   const filteredAndSortedUsers = useMemo(() => {
     return [...users]
@@ -370,6 +386,18 @@ function App() {
             user={currentUser}
           />
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </>
   );

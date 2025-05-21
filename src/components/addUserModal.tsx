@@ -10,7 +10,7 @@ import {
 } from "react";
 import { X } from "lucide-react";
 import type { User } from "../View/Home";
-
+import { toast } from "react-toastify";
 interface AddUserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -56,6 +56,20 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     };
 
     onAddUser(newUser);
+    toast("🦄 Success create New user !", {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      onClose: () => {
+        // console.log("Toast closed");
+        onClose();
+      },
+    });
     setFormData({ first_name: "", last_name: "", email: "", avatar: null });
     onClose();
   };
