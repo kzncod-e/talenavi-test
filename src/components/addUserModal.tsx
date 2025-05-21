@@ -41,40 +41,23 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
   };
 
   // Validate form
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.first_name.trim()) {
-      newErrors.name = "Name is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-
-    return Object.keys(newErrors).length === 0;
-  };
 
   // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      // Generate a random avatar if none provided
-      const newUser: User = {
-        ...formData,
-        id: Date.now(),
-        avatar:
-          formData.avatar ||
-          `/avatars/avatar${Math.floor(Math.random() * 4) + 1}.png`,
-      };
+    // Generate a random avatar if none provided
+    const newUser: User = {
+      ...formData,
+      id: Date.now(),
+      avatar:
+        formData.avatar ||
+        `/avatars/avatar${Math.floor(Math.random() * 4) + 1}.png`,
+    };
 
-      onAddUser(newUser);
-      setFormData({ first_name: "", last_name: "", email: "", avatar: null });
-      onClose();
-    }
+    onAddUser(newUser);
+    setFormData({ first_name: "", last_name: "", email: "", avatar: null });
+    onClose();
   };
 
   // Close modal when clicking outside
