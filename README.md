@@ -1,7 +1,7 @@
 # 🧪 Front End Test Project
 
-This is a simple front end project built with **React (Next.js)**. It includes
-user management with pagination, search, sort, and modal forms. The project
+This is a simple front end project built with **React **. It includes user
+management with pagination, search, sort, and modal forms. The project
 demonstrates responsive layout and modern UI handling practices.
 
 ---
@@ -24,8 +24,11 @@ demonstrates responsive layout and modern UI handling practices.
 - ✅ **Delete User** locally (filter out from state)
 - ✅ **Search Users** by name or email (debounced, responsive)
 - ✅ **Sort Users** by name or email (local sort logic)
+- ✅ **Simulated Authorization** (login check via localStorage)
+- ✅ **Route Protection** for homepage (`/`) if not logged in
+- ✅ **Sign In / Sign Up Pages** (UI only)
 - ✅ **Responsive Design** (mobile/tablet/desktop friendly)
-- ✅ Built with **Tailwind CSS**, **Lucide Icons**, and **React hooks**
+- ✅ Built with **React**, **Tailwind CSS**, and **Lucide Icons**
 
 ---
 
