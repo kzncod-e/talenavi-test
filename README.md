@@ -32,6 +32,24 @@ demonstrates responsive layout and modern UI handling practices.
 
 ---
 
+## ⚠️ Important Notes
+
+- The Reqres API is a mock API and **does not store new users**.
+  - This means the **Sign Up** page is UI-only, and added users are stored
+    locally in app state.
+- To successfully log in, you **must use the email and password provided by the
+  app**:
+
+  Example:
+
+  - Email: `eve.holt@reqres.insd`
+  - Password: `pistol`
+
+- Upon login, a simulated auth state is stored in `localStorage` to mimic
+  authentication.
+- Protected routes (like `/`) will redirect to `/sign-in` if you're not logged
+  in.
+
 ## 🚀 Getting Started
 
 1. **Clone the repo**
