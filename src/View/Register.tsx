@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 const Register = () => {
   const [email, setEmail] = React.useState("eve.holt@reqres.in");
   const [password, setPassword] = React.useState("pistol");
-  const [rememberMe, setRememberMe] = React.useState(false);
+
   const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,8 +61,8 @@ const Register = () => {
         });
         // Handle registration failure (e.g., show error message)
       }
-    } catch (error: any) {
-      console.log(error.message);
+    } catch (error) {
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

@@ -62,8 +62,8 @@ const Login = () => {
         });
         // Handle registration failure (e.g., show error message)
       }
-    } catch (error: any) {
-      console.log(error.message);
+    } catch (error) {
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
