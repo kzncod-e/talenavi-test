@@ -185,7 +185,13 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black">
+              className="px-4 py-2 bg-black disabled:bg-gray-400 text-white rounded-md text-sm font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
+              disabled={
+                !formData.first_name ||
+                !formData.last_name ||
+                !formData.email ||
+                !formData.avatar
+              }>
               Update User
             </button>
           </div>

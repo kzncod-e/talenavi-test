@@ -6,6 +6,8 @@ import { OrbitProgress } from "react-loading-indicators";
 import AddUserModal from "../components/addUserModal";
 import DeleteConfirmationModal from "../components/deleteConfirmationModal";
 import EditUserModal from "../components/editUserModal";
+import { useNavigate } from "react-router-dom";
+import NavBar from "../components/Navbar";
 
 // Mock data for pagination
 
@@ -34,6 +36,22 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("token");
+    if (isLoggedIn) {
+      setToken(isLoggedIn);
+    }
+    if (!isLoggedIn) {
+      navigate("/sign-in");
+    }
+  }, [token]);
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    navigate("/sign-in");
+  };
   const fetctUserr = async () => {
     try {
       setIsLoading(true);
@@ -128,224 +146,232 @@ function App() {
       });
   }, [users, debouncedQuery, sortBy]);
   return (
-    <div className="flex justify-center p-4 sm:p-8 bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-lg shadow-md w-full max-w-4xl p-4 sm:p-6">
-        {/* Header - Responsive */}
-        <header className="flex justify-between items-center mb-4 sm:mb-6">
-          <div className="flex items-center gap-2">
-            <Users size={20} />
-            <h1 className="text-lg sm:text-xl font-semibold">
-              User Management
-            </h1>
-          </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-black text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium flex items-center gap-1">
-            <span>+</span> Add User
-          </button>
-        </header>
+    <>
+      <NavBar onSignOut={handleSignOut} />
+      <div className="flex justify-center mt-12 p-4 sm:p-8 bg-gray-50 min-h-screen">
+        <div className="bg-white rounded-lg shadow-md w-full max-w-4xl p-4 sm:p-6">
+          {/* Header - Responsive */}
+          <header className="flex justify-between items-center mb-4 sm:mb-6">
+            <div className="flex items-center gap-2">
+              <Users size={20} />
+              <h1 className="text-lg sm:text-xl font-semibold">
+                User Management
+              </h1>
+            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-black text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium flex items-center gap-1">
+              <span>+</span> Add User
+            </button>
+          </header>
 
-        {/* Search and Sort - Responsive */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-          <div className="relative w-full sm:w-64">
-            <input
-              type="text"
-              placeholder="Search users..."
-              value={searchQuery}
-              onChange={handleSearch}
-              className="w-full px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black"
-            />
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-500">Sort by:</span>
-            <select
-              value={sortBy}
-              onChange={handleSort}
-              className="px-2 py-1 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black">
-              <option>Name</option>
-              <option>Email</option>
-            </select>
-          </div>
-        </div>
-        {isLoading ? (
-          <>
-            <div className=" flex justify-center items-center">
-              <OrbitProgress
-                color="#030303"
-                size="large"
-                text=""
-                textColor=""
+          {/* Search and Sort - Responsive */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+            <div className="relative w-full sm:w-64">
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={searchQuery}
+                onChange={handleSearch}
+                className="w-full px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black"
               />
             </div>
-          </>
-        ) : (
-          <>
-            {/* Table - Responsive */}
-            <div className="border border-gray-200 rounded-md overflow-hidden mb-4">
-              {/* Desktop Table View */}
-              <div className="hidden sm:block">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase">
-                      <th className="px-4 py-3 text-left w-20">Avatar</th>
-                      <th className="px-4 py-3 text-left">Full Name</th>
-                      <th className="px-4 py-3 text-left">Email</th>
-                      <th className="px-4 py-3 text-left w-24">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredAndSortedUsers.map((user) => (
-                      <tr key={user.id} className="border-t border-gray-200">
-                        <td className="px-4 py-3">
-                          <img
-                            src={user.avatar || "/placeholder.svg"}
-                            alt={user.avatar}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          {user?.first_name} {user.last_name}
-                        </td>
-                        <td className="px-4 py-3 text-sm">{user.email}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => {
-                                setCurrentUser(user);
-                                setIsEditModalOpen(true);
-                              }}
-                              className="text-gray-500 hover:text-gray-900">
-                              <Edit size={16} />
-                            </button>
-                            <button
-                              className="text-gray-500 hover:text-gray-900"
-                              onClick={() => handleDeleteUser(user.id)}>
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-gray-500">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={handleSort}
+                className="px-2 py-1 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black">
+                <option>Name</option>
+                <option>Email</option>
+              </select>
+            </div>
+          </div>
+          {isLoading ? (
+            <>
+              <div className=" flex justify-center items-center">
+                <OrbitProgress
+                  color="#030303"
+                  size="large"
+                  text=""
+                  textColor=""
+                />
               </div>
+            </>
+          ) : (
+            <>
+              {/* Table - Responsive */}
+              <div className="border border-gray-200 rounded-md overflow-hidden mb-4">
+                {/* Desktop Table View */}
+                <div className="hidden sm:block">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left w-20">Avatar</th>
+                        <th className="px-4 py-3 text-left">Full Name</th>
+                        <th className="px-4 py-3 text-left">Email</th>
+                        <th className="px-4 py-3 text-left w-24">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredAndSortedUsers.map((user) => (
+                        <tr key={user.id} className="border-t border-gray-200">
+                          <td className="px-4 py-3">
+                            <img
+                              src={user.avatar || "/placeholder.svg"}
+                              alt={user.avatar}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {user?.first_name} {user.last_name}
+                          </td>
+                          <td className="px-4 py-3 text-sm">{user.email}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  setCurrentUser(user);
+                                  setIsEditModalOpen(true);
+                                }}
+                                className="text-gray-500 hover:text-gray-900">
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                className="text-gray-500 hover:text-gray-900"
+                                onClick={() => handleDeleteUser(user.id)}>
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-              {/* Mobile Card View */}
-              <div className="sm:hidden">
-                {filteredAndSortedUsers.map((user) => (
-                  <div key={user.id} className="border-t border-gray-200 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <img
-                        src={user.avatar || "/placeholder.svg"}
-                        alt={user.avatar}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div>
-                        <div className="font-medium">
-                          {user.first_name} {user.last_name}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {user.email}
+                {/* Mobile Card View */}
+                <div className="sm:hidden">
+                  {filteredAndSortedUsers.map((user) => (
+                    <div key={user.id} className="border-t border-gray-200 p-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <img
+                          src={user.avatar || "/placeholder.svg"}
+                          alt={user.avatar}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div>
+                          <div className="font-medium">
+                            {user.first_name} {user.last_name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {user.email}
+                          </div>
                         </div>
                       </div>
+                      <div className="flex justify-end gap-2 mt-2">
+                        <button
+                          onClick={() => {
+                            setCurrentUser(user);
+                            setIsEditModalOpen(true);
+                          }}
+                          className="text-gray-500 hover:text-gray-900 p-1">
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDeleteUser(user.id);
+                          }}
+                          className="text-gray-500 hover:text-gray-900 p-1">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex justify-end gap-2 mt-2">
-                      <button className="text-gray-500 hover:text-gray-900 p-1">
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleDeleteUser(user.id);
-                        }}
-                        className="text-gray-500 hover:text-gray-900 p-1">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Pagination - Responsive */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm text-gray-500">
-              <div className="order-2 sm:order-1">
-                Showing 1 to {usersPerPage} of {totalUsers} users
-              </div>
-              <div className="flex gap-1 order-1 sm:order-2">
-                <button
-                  className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border border-gray-200 rounded-md disabled:opacity-50"
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}>
-                  &lt;
-                </button>
+              {/* Pagination - Responsive */}
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm text-gray-500">
+                <div className="order-2 sm:order-1">
+                  Showing 1 to {usersPerPage} of {totalUsers} users
+                </div>
+                <div className="flex gap-1 order-1 sm:order-2">
+                  <button
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border border-gray-200 rounded-md disabled:opacity-50"
+                    disabled={currentPage === 1}
+                    onClick={() => handlePageChange(currentPage - 1)}>
+                    &lt;
+                  </button>
 
-                {/* Show fewer page numbers on mobile */}
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter((page) => {
-                    // On mobile, show current page and adjacent pages
-                    if (window.innerWidth < 640) {
+                  {/* Show fewer page numbers on mobile */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // On mobile, show current page and adjacent pages
+                      if (window.innerWidth < 640) {
+                        return (
+                          Math.abs(page - currentPage) <= 1 ||
+                          page === 1 ||
+                          page === totalPages
+                        );
+                      }
+                      return true;
+                    })
+                    .map((page, index, array) => {
+                      // Add ellipsis
+                      if (index > 0 && page - array[index - 1] > 1) {
+                        return (
+                          <span
+                            key={`ellipsis-${page}`}
+                            className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400">
+                            ...
+                          </span>
+                        );
+                      }
                       return (
-                        Math.abs(page - currentPage) <= 1 ||
-                        page === 1 ||
-                        page === totalPages
+                        <button
+                          key={page}
+                          className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md ${
+                            currentPage === page
+                              ? "bg-black text-white border-black"
+                              : "bg-white text-gray-700 border-gray-200"
+                          }`}
+                          onClick={() => handlePageChange(page)}>
+                          {page}
+                        </button>
                       );
-                    }
-                    return true;
-                  })
-                  .map((page, index, array) => {
-                    // Add ellipsis
-                    if (index > 0 && page - array[index - 1] > 1) {
-                      return (
-                        <span
-                          key={`ellipsis-${page}`}
-                          className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400">
-                          ...
-                        </span>
-                      );
-                    }
-                    return (
-                      <button
-                        key={page}
-                        className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md ${
-                          currentPage === page
-                            ? "bg-black text-white border-black"
-                            : "bg-white text-gray-700 border-gray-200"
-                        }`}
-                        onClick={() => handlePageChange(page)}>
-                        {page}
-                      </button>
-                    );
-                  })}
+                    })}
 
-                <button
-                  className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border border-gray-200 rounded-md disabled:opacity-50"
-                  disabled={currentPage === totalPages}
-                  onClick={() => handlePageChange(currentPage + 1)}>
-                  &gt;
-                </button>
+                  <button
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border border-gray-200 rounded-md disabled:opacity-50"
+                    disabled={currentPage === totalPages}
+                    onClick={() => handlePageChange(currentPage + 1)}>
+                    &gt;
+                  </button>
+                </div>
               </div>
-            </div>
-          </>
-        )}
-        <AddUserModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onAddUser={handleAddUser}
-        />
-        <EditUserModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onUpdateUser={handleUpdateUser}
-          user={currentUser}
-        />
-        <DeleteConfirmationModal
-          isOpen={isDeleteModalOpen}
-          onClose={setIsDeleteModalOpen}
-          onConfirmDelete={handleConfirmDelete}
-          user={currentUser}
-        />
+            </>
+          )}
+          <AddUserModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onAddUser={handleAddUser}
+          />
+          <EditUserModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            onUpdateUser={handleUpdateUser}
+            user={currentUser}
+          />
+          <DeleteConfirmationModal
+            isOpen={isDeleteModalOpen}
+            onClose={setIsDeleteModalOpen}
+            onConfirmDelete={handleConfirmDelete}
+            user={currentUser}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
