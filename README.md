@@ -18,14 +18,14 @@ demonstrates responsive layout and modern UI handling practices.
 
 ## ⚙️ Features
 
-- ✅ User listing with pagination (API: [reqres.in](https://reqres.in))
-- ✅ Add user (local only)
-- ✅ Edit user (UI modal)
-- ✅ Delete user (local filtering)
-- ✅ Local search (with debounce)
-- ✅ Local sort (by name or email)
-- ✅ Responsive layout (mobile-friendly)
-- ✅ Built with Tailwind CSS + Lucide icons
+- ✅ **User Listing** with pagination (from Reqres API)
+- ✅ **Add User** locally (form + modal)
+- ✅ **Edit User** (UI modal only, local update)
+- ✅ **Delete User** locally (filter out from state)
+- ✅ **Search Users** by name or email (debounced, responsive)
+- ✅ **Sort Users** by name or email (local sort logic)
+- ✅ **Responsive Design** (mobile/tablet/desktop friendly)
+- ✅ Built with **Tailwind CSS**, **Lucide Icons**, and **React hooks**
 
 ---
 
